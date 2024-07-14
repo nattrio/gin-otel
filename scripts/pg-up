@@ -1,0 +1,12 @@
+#!/bin/sh
+
+CONNECTION_STRING="postgres://${POSTGRES_USERNAME}:${POSTGRES_PASSWORD}@localhost:${POSTGRES_PORT}/${POSTGRES_DB}?sslmode=disable"
+
+if nc -z localhost $POSTGRES_PORT; then
+  :
+else
+  echo "Postgres is down"
+  exit 1
+fi
+
+migrate -database $CONNECTION_STRING -path ./db/migration up

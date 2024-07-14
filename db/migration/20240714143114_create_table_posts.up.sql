@@ -1,0 +1,6 @@
+CREATE TABLE posts (
+    id VARCHAR(255) PRIMARY KEY,
+    title VARCHAR(100) NOT NULL,
+    content TEXT NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
