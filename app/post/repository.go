@@ -35,9 +35,50 @@ func (p *postRepo) CreatePost(ctx context.Context, post Post) error {
 }
 
 func (p *postRepo) GetPost(ctx context.Context, id string) (Post, error) {
-	return Post{}, nil
+	query := `SELECT id, title, content, created_at
+		FROM posts
+		WHERE id = $1
+	`
+
+	var post Post
+	err := p.db.QueryRow(ctx, query, id).Scan(
+		&post.ID,
+		&post.Title,
+		&post.Content,
+		&post.CreatedAt,
+	)
+	if err != nil {
+		return Post{}, err
+	}
+
+	return post, nil
 }
 
 func (p *postRepo) GetPosts(ctx context.Context) ([]Post, error) {
-	return []Post{}, nil
+	query := `SELECT id, title, content, created_at
+		FROM posts
+	`
+
+	rows, err := p.db.Query(ctx, query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var posts []Post
+	for rows.Next() {
+		var post Post
+		err := rows.Scan(
+			&post.ID,
+			&post.Title,
+			&post.Content,
+			&post.CreatedAt,
+		)
+		if err != nil {
+			return nil, err
+		}
+		posts = append(posts, post)
+	}
+
+	return posts, nil
 }
