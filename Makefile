@@ -1,6 +1,6 @@
 .PHONY: up down down-v app
 up:
-	cd docker && docker compose up -d
+	cd docker && docker compose up --build -d
 down:
 	cd docker && docker compose down
 down-v:
