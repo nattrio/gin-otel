@@ -65,7 +65,7 @@ func (p *postRepo) GetPosts(ctx context.Context) ([]Post, error) {
 	}
 	defer rows.Close()
 
-	var posts []Post
+	posts := []Post{}
 	for rows.Next() {
 		var post Post
 		err := rows.Scan(
@@ -78,6 +78,10 @@ func (p *postRepo) GetPosts(ctx context.Context) ([]Post, error) {
 			return nil, err
 		}
 		posts = append(posts, post)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
 	}
 
 	return posts, nil
