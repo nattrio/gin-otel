@@ -111,6 +111,23 @@ services:
   #   volumes:
   #     - '/:/host:ro,rslave'
 
+  app:
+    platform: "${BUILDPLATFORM:-linux/amd64}"
+    restart: always
+    build:
+      context: ../.
+    container_name: backend01
+    env_file:
+      - ../.env
+    ports:
+      - "${APP_PORT}:${APP_PORT}"
+    depends_on:
+      - postgres
+    develop:
+      watch:
+        - action: rebuild
+          path: ./
+
 volumes:
   ch_data2:
   pg_data3:

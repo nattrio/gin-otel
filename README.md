@@ -10,9 +10,6 @@ make up
 
 # migrate db
 make pg-up
-
-# run go app
-make app
 ```
 
 Down service
