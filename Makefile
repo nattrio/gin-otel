@@ -17,3 +17,11 @@ pg-up:
 	bash scripts/pg-up
 pg-down:
 	bash scripts/pg-down
+
+.PHONY: check-swagger swagger swagger-serve
+check-swagger:
+	which swagger
+swagger: check-swagger
+	swagger generate spec -o ./docs/swagger.yaml --scan-models
+swagger-serve: check-swagger swagger
+	swagger serve -F=swagger ./docs/swagger.yaml --no-open

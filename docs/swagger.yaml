@@ -1,0 +1,103 @@
+basePath: /
+consumes:
+    - application/json
+    - multipart/form-data
+definitions:
+    CreatePost:
+        properties:
+            content:
+                type: string
+                x-go-name: Content
+            title:
+                type: string
+                x-go-name: Title
+        type: object
+        x-go-package: github.com/nattrio/gin-otel/app/post
+    Post:
+        properties:
+            content:
+                type: string
+                x-go-name: Content
+            created_at:
+                format: date-time
+                type: string
+                x-go-name: CreatedAt
+            id:
+                type: string
+                x-go-name: ID
+            title:
+                type: string
+                x-go-name: Title
+        type: object
+        x-go-package: github.com/nattrio/gin-otel/app/post
+host: localhost:8080
+info:
+    description: Documentation for my go project
+    title: Go API
+    version: 1.0.0
+paths:
+    /posts:
+        get:
+            operationId: getPosts
+            responses:
+                "200":
+                    $ref: '#/responses/getPostsResponse'
+            summary: Get all posts.
+            tags:
+                - post
+        post:
+            operationId: createPost
+            parameters:
+                - description: Request body for creating a new post.
+                  in: body
+                  name: Body
+                  schema:
+                    $ref: '#/definitions/CreatePost'
+            responses:
+                "200":
+                    $ref: '#/responses/createPostResponse'
+            summary: Create a new post.
+            tags:
+                - post
+    /posts/{id}:
+        get:
+            operationId: getPost
+            parameters:
+                - description: Post ID.
+                  in: path
+                  name: id
+                  required: true
+                  type: string
+                  x-go-name: ID
+            responses:
+                "200":
+                    $ref: '#/responses/getPostResponse'
+            summary: Get a post by ID.
+            tags:
+                - post
+produces:
+    - application/json
+responses:
+    createPostResponse:
+        description: Create a new post successfully.
+        schema:
+            type: object
+    getPostResponse:
+        description: Get a post by ID successfully.
+        schema:
+            $ref: '#/definitions/Post'
+    getPostsResponse:
+        description: Get all posts successfully.
+        schema:
+            items:
+                $ref: '#/definitions/Post'
+            type: array
+schemes:
+    - http
+securityDefinitions:
+    bearer:
+        description: Enter the token with the `Bearer ` prefix, e.g. "Bearer (insert_token_here)"
+        in: header
+        name: Authorization
+        type: apiKey
+swagger: "2.0"
