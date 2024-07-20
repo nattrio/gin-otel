@@ -7,6 +7,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/gin-contrib/cors"
 	"github.com/nattrio/gin-otel/app/post"
 	"github.com/nattrio/gin-otel/config"
 	"github.com/nattrio/gin-otel/db"
@@ -41,6 +42,17 @@ func main() {
 	postHandler := post.NewPostHandler(postUsecase)
 
 	router := gin.Default()
+
+	config := cors.Config{
+		AllowAllOrigins:  true,
+		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"},
+		AllowHeaders:     []string{"X-Requested-With", "Authorization", "Origin", "Content-Length", "Content-Type", "TransactionID"},
+		AllowCredentials: false,
+		MaxAge:           12 * time.Hour,
+	}
+
+	router.Use(cors.New(config))
+
 	router.Use(otelgin.Middleware(serviceName))
 
 	router.POST("/posts", postHandler.CreatePost)
