@@ -3,14 +3,14 @@ package post
 import (
 	"context"
 
-	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/nattrio/gin-otel/db"
 )
 
 type postRepo struct {
-	db *pgxpool.Pool
+	db db.DBTX
 }
 
-func NewPostRepo(db *pgxpool.Pool) *postRepo {
+func NewPostRepo(db db.DBTX) *postRepo {
 	return &postRepo{
 		db: db,
 	}
