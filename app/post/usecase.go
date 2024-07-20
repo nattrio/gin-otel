@@ -13,6 +13,8 @@ type PostRepo interface {
 	CreatePost(ctx context.Context, post Post) error
 	GetPost(ctx context.Context, id string) (Post, error)
 	GetPosts(ctx context.Context) ([]Post, error)
+	UpdatePost(ctx context.Context, id string, post Post) error
+	DeletePost(ctx context.Context, id string) error
 }
 
 type postUsecase struct {
@@ -42,9 +44,47 @@ func (p *postUsecase) CreatePost(ctx context.Context, arg CreatePost) error {
 }
 
 func (p *postUsecase) GetPosts(ctx context.Context) ([]Post, error) {
-	return p.repo.GetPosts(ctx)
+	posts, err := p.repo.GetPosts(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return posts, nil
 }
 
 func (p *postUsecase) GetPost(ctx context.Context, id string) (Post, error) {
-	return p.repo.GetPost(ctx, id)
+	post, err := p.repo.GetPost(ctx, id)
+	if err != nil {
+		return Post{}, err
+	}
+
+	return post, nil
+}
+
+func (p *postUsecase) UpdatePost(ctx context.Context, id string, arg UpdatePost) error {
+	currentPost, err := p.repo.GetPost(ctx, id)
+	if err != nil {
+		return err
+	}
+
+	updatePost := Post{
+		ID:        currentPost.ID,
+		Title:     arg.Title,
+		Content:   arg.Content,
+		CreatedAt: currentPost.CreatedAt,
+	}
+
+	if err := p.repo.UpdatePost(ctx, id, updatePost); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (p *postUsecase) DeletePost(ctx context.Context, id string) error {
+	if err := p.repo.DeletePost(ctx, id); err != nil {
+		return err
+	}
+
+	return nil
 }

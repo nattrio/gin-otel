@@ -58,6 +58,8 @@ func main() {
 	router.POST("/posts", postHandler.CreatePost)
 	router.GET("/posts", postHandler.GetPosts)
 	router.GET("/posts/:id", postHandler.GetPost)
+	router.PATCH("/posts/:id", postHandler.UpdatePost)
+	router.DELETE("/posts/:id", postHandler.DeletePost)
 
 	srv := http.Server{
 		Addr:              ":" + cfg.App.Port,

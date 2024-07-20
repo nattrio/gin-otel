@@ -86,3 +86,34 @@ func (p *postRepo) GetPosts(ctx context.Context) ([]Post, error) {
 
 	return posts, nil
 }
+
+func (p *postRepo) UpdatePost(ctx context.Context, id string, post Post) error {
+	query := `UPDATE posts
+		SET title = $1, content = $2
+		WHERE id = $3
+	`
+
+	_, err := p.db.Exec(ctx, query,
+		post.Title,
+		post.Content,
+		id,
+	)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (p *postRepo) DeletePost(ctx context.Context, id string) error {
+	query := `DELETE FROM posts
+		WHERE id = $1
+	`
+
+	_, err := p.db.Exec(ctx, query, id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
