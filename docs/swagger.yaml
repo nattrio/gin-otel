@@ -60,6 +60,20 @@ paths:
             tags:
                 - post
     /posts/{id}:
+        delete:
+            operationId: deletePost
+            parameters:
+                - in: path
+                  name: id
+                  required: true
+                  type: string
+                  x-go-name: ID
+            responses:
+                "200":
+                    $ref: '#/responses/deletePostResponse'
+            summary: Delete a post by ID.
+            tags:
+                - post
         get:
             operationId: getPost
             parameters:
@@ -75,12 +89,44 @@ paths:
             summary: Get a post by ID.
             tags:
                 - post
+        patch:
+            operationId: updatePost
+            parameters:
+                - in: path
+                  name: id
+                  required: true
+                  type: string
+                  x-go-name: ID
+                - in: body
+                  name: Body
+                  schema:
+                    $ref: '#/definitions/CreatePost'
+            responses:
+                "200":
+                    $ref: '#/responses/updatePostResponse'
+            summary: Update a post by ID.
+            tags:
+                - post
 produces:
     - application/json
 responses:
     createPostResponse:
         description: Create a new post successfully.
         schema:
+            properties:
+                message:
+                    example: post created
+                    type: string
+                    x-go-name: Message
+            type: object
+    deletePostResponse:
+        description: Delete a post by ID successfully.
+        schema:
+            properties:
+                message:
+                    example: post deleted
+                    type: string
+                    x-go-name: Message
             type: object
     getPostResponse:
         description: Get a post by ID successfully.
@@ -92,6 +138,15 @@ responses:
             items:
                 $ref: '#/definitions/Post'
             type: array
+    updatePostResponse:
+        description: Update a post by ID successfully.
+        schema:
+            properties:
+                message:
+                    example: post updated
+                    type: string
+                    x-go-name: Message
+            type: object
 schemes:
     - http
 securityDefinitions:
