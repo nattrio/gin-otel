@@ -3,6 +3,7 @@ package post
 import (
 	"context"
 
+	"github.com/jackc/pgx/v5"
 	"github.com/nattrio/gin-otel/db"
 )
 
@@ -65,22 +66,18 @@ func (p *postRepo) GetPosts(ctx context.Context) ([]Post, error) {
 	}
 	defer rows.Close()
 
-	posts := []Post{}
-	for rows.Next() {
-		var post Post
-		err := rows.Scan(
-			&post.ID,
-			&post.Title,
-			&post.Content,
-			&post.CreatedAt,
-		)
-		if err != nil {
-			return nil, err
-		}
-		posts = append(posts, post)
-	}
+	// posts := []Post{}
+	// var post Post
+	// _, err = pgx.ForEachRow(rows, []any{&post.ID, &post.Title, &post.Content, &post.CreatedAt}, func() error {
+	// 	posts = append(posts, post)
+	// 	return nil
+	// })
+	// if err != nil {
+	// 	return nil, err
+	// }
 
-	if err := rows.Err(); err != nil {
+	posts, err := pgx.CollectRows(rows, pgx.RowToStructByNameLax[Post])
+	if err != nil {
 		return nil, err
 	}
 
