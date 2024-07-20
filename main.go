@@ -23,6 +23,7 @@ const (
 	serviceName    = "my-app"
 	serviceVersion = "0.1.0"
 	netHostName    = "gin-otel"
+	deploymentEnv  = "development"
 )
 
 func main() {
@@ -38,6 +39,7 @@ func main() {
 	uptrace.ConfigureOpentelemetry(
 		uptrace.WithServiceName(serviceName),
 		uptrace.WithServiceVersion(serviceVersion),
+		uptrace.WithDeploymentEnvironment(deploymentEnv),
 	)
 	defer uptrace.Shutdown(ctx)
 
