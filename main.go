@@ -19,7 +19,11 @@ import (
 	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 )
 
-const serviceName = "gin-otel"
+const (
+	serviceName    = "my-app"
+	serviceVersion = "0.1.0"
+	netHostName    = "gin-otel"
+)
 
 func main() {
 	cfg := config.Value()
@@ -31,7 +35,10 @@ func main() {
 	undo := otelzap.ReplaceGlobals(logger)
 	defer undo()
 
-	uptrace.ConfigureOpentelemetry()
+	uptrace.ConfigureOpentelemetry(
+		uptrace.WithServiceName(serviceName),
+		uptrace.WithServiceVersion(serviceVersion),
+	)
 	defer uptrace.Shutdown(ctx)
 
 	postgres := db.NewPGXPool(cfg.PostgresURL())
