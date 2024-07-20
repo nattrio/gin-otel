@@ -1,4 +1,4 @@
-# Gin Opentelemetry Demo
+# Gin OpenTelemetry Uptrace Demo
 
 ## Run
 
