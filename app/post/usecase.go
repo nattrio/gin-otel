@@ -6,6 +6,8 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/uptrace/opentelemetry-go-extra/otelzap"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/zap"
 )
 
@@ -36,7 +38,7 @@ func (p *postUsecase) CreatePost(ctx context.Context, arg CreatePost) error {
 	}
 
 	if err := p.repo.CreatePost(ctx, newPost); err != nil {
-		otelzap.Ctx(ctx).Error("failed to create post", zap.Error(err))
+		otelzap.Ctx(ctx).Error("create post failed", zap.Error(err))
 		return err
 	}
 
@@ -78,6 +80,8 @@ func (p *postUsecase) UpdatePost(ctx context.Context, id string, arg UpdatePost)
 		return err
 	}
 
+	// doSomething(ctx)
+
 	return nil
 }
 
@@ -87,4 +91,21 @@ func (p *postUsecase) DeletePost(ctx context.Context, id string) error {
 	}
 
 	return nil
+}
+
+func doSomething(ctx context.Context) {
+	// ? Create a new span and tracer
+	var tracer = otel.Tracer("do-something-service")
+	_, span := tracer.Start(ctx, "lazy-work",
+		trace.WithSpanKind(trace.SpanKindServer))
+	defer span.End()
+
+	// ? Or use span from ctx and add event
+	// ? The main difference between events and spans is that events don't have end time (and therefore no duration).
+	// span := trace.SpanFromContext(ctx)
+	// span.AddEvent("doing something")
+	// span.SetAttributes(attribute.String("doing", "something"))
+	// defer span.End()
+
+	time.Sleep(3 * time.Second)
 }
