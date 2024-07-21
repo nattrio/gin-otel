@@ -66,17 +66,12 @@ func (p *postRepo) GetPosts(ctx context.Context) ([]Post, error) {
 	}
 	defer rows.Close()
 
-	// posts := []Post{}
-	// var post Post
-	// _, err = pgx.ForEachRow(rows, []any{&post.ID, &post.Title, &post.Content, &post.CreatedAt}, func() error {
-	// 	posts = append(posts, post)
-	// 	return nil
-	// })
-	// if err != nil {
-	// 	return nil, err
-	// }
-
-	posts, err := pgx.CollectRows(rows, pgx.RowToStructByNameLax[Post])
+	posts := []Post{}
+	var post Post
+	_, err = pgx.ForEachRow(rows, []any{&post.ID, &post.Title, &post.Content, &post.CreatedAt}, func() error {
+		posts = append(posts, post)
+		return nil
+	})
 	if err != nil {
 		return nil, err
 	}
