@@ -25,3 +25,9 @@ swagger: check-swagger
 	swagger generate spec -o ./docs/swagger.yaml --scan-models
 swagger-serve: check-swagger swagger
 	swagger serve -F=swagger ./docs/swagger.yaml --no-open
+
+.PHONY: dep-tree
+dep-tree:
+	mkdir -p .dep-tree
+	@read -p "Enter path: " path; \
+	dep-tree entropy --no-browser-open --enable-gui --render-path ./.dep-tree/index.html $$path
