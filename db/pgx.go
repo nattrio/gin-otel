@@ -18,7 +18,10 @@ func NewPGXPool(connString string) *pgxpool.Pool {
 	}
 
 	// add tracing to the connection
-	config.ConnConfig.Tracer = pgxotel.NewTracer(otelServiceName)
+	config.ConnConfig.Tracer = &pgxotel.QueryTracer{
+		Name: otelServiceName,
+	}
+
 	pool, err := pgxpool.NewWithConfig(context.Background(), config)
 	if err != nil {
 		log.Fatal(err)
@@ -33,7 +36,10 @@ func NewPGXConn(connString string) *pgx.Conn {
 		log.Fatal(err)
 	}
 
-	config.Tracer = pgxotel.NewTracer(otelServiceName)
+	config.Tracer = &pgxotel.QueryTracer{
+		Name: otelServiceName,
+	}
+
 	conn, err := pgx.ConnectConfig(context.Background(), config)
 	if err != nil {
 		log.Fatal(err)
